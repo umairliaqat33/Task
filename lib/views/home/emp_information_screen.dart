@@ -161,7 +161,12 @@ class _EmployeeInformationScreenState extends State<EmployeeInformationScreen> {
           _profilePlatformFile,
           _nameController.text,
         );
-
+        if (profilePicture!.isEmpty) {
+          setState(() {
+            _showSpinner = false;
+          });
+          return;
+        }
         firestoreRespository.uploadEmpInformation(
           EmpModel(
             name: _nameController.text,
@@ -169,7 +174,7 @@ class _EmployeeInformationScreenState extends State<EmployeeInformationScreen> {
             designation: _desgController.text,
             phone: _phoneController.text,
             email: _emailController.text,
-            imageLing: profilePicture!,
+            imageLing: profilePicture,
           ),
         );
         Fluttertoast.showToast(msg: 'Data uploading complete');
