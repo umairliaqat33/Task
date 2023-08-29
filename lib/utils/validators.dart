@@ -19,4 +19,36 @@ class Validators {
       return null;
     }
   }
+
+  static String? nameValidator(String? value) {
+    if (value!.isEmpty) {
+      return "Name required";
+    } else {
+      return null;
+    }
+  }
+
+  static String? desigValidator(String? value) {
+    if (value!.isEmpty) {
+      return "Designation required";
+    } else {
+      return null;
+    }
+  }
+
+  static String? deptValidator(String? value) {
+    if (value!.isEmpty) {
+      return "Department name required";
+    } else {
+      return null;
+    }
+  }
+
+  static String? phoneValidator(String? value) {
+    if (value!.isEmpty) {
+      return "Phone Number required";
+    } else {
+      return null;
+    }
+  }
 }
