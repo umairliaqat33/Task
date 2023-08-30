@@ -33,6 +33,7 @@ class _EmployeeInformationScreenState extends State<EmployeeInformationScreen> {
   PlatformFile? _profilePlatformFile;
   String? _imageLink;
   bool _showSpinner = false;
+  bool _isImageAvailable = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,6 +110,16 @@ class _EmployeeInformationScreenState extends State<EmployeeInformationScreen> {
                   obsecureText: false,
                 ),
                 const SizedBox(height: 16),
+                Visibility(
+                  visible: _isImageAvailable,
+                  child: const Text(
+                    "Please add image",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
                 ImagePickerBigWidget(
                   heading: 'Profile Photo',
                   description:
@@ -155,15 +166,22 @@ class _EmployeeInformationScreenState extends State<EmployeeInformationScreen> {
       _showSpinner = true;
     });
     FirestoreRepository firestoreRespository = FirestoreRepository();
+    String? profilePicture = await MediaService.uploadFile(
+      _profilePlatformFile,
+      _nameController.text,
+    );
+    if (profilePicture == null) {
+      setState(() {
+        _showSpinner = false;
+        _isImageAvailable = true;
+      });
+    }
     if (_formKey.currentState!.validate()) {
       try {
-        String? profilePicture = await MediaService.uploadFile(
-          _profilePlatformFile,
-          _nameController.text,
-        );
-        if (profilePicture!.isEmpty) {
+        if (profilePicture == null) {
           setState(() {
             _showSpinner = false;
+            _isImageAvailable = true;
           });
           return;
         }
@@ -177,6 +195,10 @@ class _EmployeeInformationScreenState extends State<EmployeeInformationScreen> {
             imageLing: profilePicture,
           ),
         );
+        setState(() {
+          _showSpinner = false;
+          _isImageAvailable = false;
+        });
         Fluttertoast.showToast(msg: 'Data uploading complete');
 
         Navigator.of(context).pushAndRemoveUntil(
@@ -191,6 +213,7 @@ class _EmployeeInformationScreenState extends State<EmployeeInformationScreen> {
     }
     setState(() {
       _showSpinner = false;
+      _isImageAvailable = false;
     });
   }
 }
